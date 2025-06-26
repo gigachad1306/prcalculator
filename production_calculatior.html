@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Rate Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        .input-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .output-section {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            border-radius: 15px;
+            padding: 30px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .output-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            font-weight: 600;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 0.95rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-group input:hover {
+            border-color: #bdc3c7;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(52, 152, 219, 0.4);
+            background: linear-gradient(135deg, #2980b9, #3498db);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .result-label {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+            z-index: 1;
+        }
+
+        .result-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .result-unit {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        .equation-display {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            border-left: 4px solid #3498db;
+        }
+
+        .equation-display h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .equation-display code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            line-height: 1.4;
+            word-break: break-all;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .result-value {
+                font-size: 2.5rem;
+            }
+            
+            .input-section, .output-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Production Rate Calculator</h1>
+            <p>Advanced Chemical Process Optimization Dashboard</p>
+        </div>
+        
+        <div class="dashboard">
+            <div class="input-section">
+                <h2 class="section-title">Input Parameters</h2>
+                
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="c3Flow">C3 Flow</label>
+                        <input type="number" id="c3Flow" step="any" placeholder="Enter C3 Flow value">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="catFlow">Cat Flow</label>
+                        <input type="number" id="catFlow" step="any" placeholder="Enter Cat Flow value">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="scaFlow">SCA Flow</label>
+                        <input type="number" id="scaFlow" step="any" placeholder="Enter SCA Flow value">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="tealSca">Teal/SCA Ratio</label>
+                        <input type="number" id="tealSca" step="any" placeholder="Enter Teal/SCA ratio">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="hydrogenFlow">Hydrogen Flow</label>
+                        <input type="number" id="hydrogenFlow" step="any" placeholder="Enter Hydrogen Flow value">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="h2C3">H2/C3 Ratio</label>
+                        <input type="number" id="h2C3" step="any" placeholder="Enter H2/C3 ratio">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="bedWeight">Bed Weight</label>
+                        <input type="number" id="bedWeight" step="any" placeholder="Enter Bed Weight value">
+                    </div>
+                </div>
+                
+                <button class="calculate-btn" onclick="calculateProductionRate()">
+                    Calculate Production Rate
+                </button>
+                
+                <div class="equation-display">
+                    <h3>Equation:</h3>
+                    <code>Production_rate = -0.598327 - 0.000185 × C3_Flow - 0.041806 × Cat_Flow + 8.566896 × SCA_Flow + 4.716540 × Teal/SCA - 0.163208 × Hydrogen_Flow - 419.061970 × H2/C3 - 0.000019 × Bed_Weight</code>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <div class="result-label">Production Rate</div>
+                <div class="result-value" id="result">---</div>
+                <div class="result-unit">units/time</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Made by Khushi &copy; 2025</p>
+        </div>
+    </div>
+
+    <script>
+        function calculateProductionRate() {
+            // Get input values
+            const c3Flow = parseFloat(document.getElementById('c3Flow').value) || 0;
+            const catFlow = parseFloat(document.getElementById('catFlow').value) || 0;
+            const scaFlow = parseFloat(document.getElementById('scaFlow').value) || 0;
+            const tealSca = parseFloat(document.getElementById('tealSca').value) || 0;
+            const hydrogenFlow = parseFloat(document.getElementById('hydrogenFlow').value) || 0;
+            const h2C3 = parseFloat(document.getElementById('h2C3').value) || 0;
+            const bedWeight = parseFloat(document.getElementById('bedWeight').value) || 0;
+            
+            // Calculate production rate using the given equation
+            const productionRate = -0.598327 
+                - 0.000185 * c3Flow 
+                - 0.041806 * catFlow 
+                + 8.566896 * scaFlow 
+                + 4.716540 * tealSca 
+                - 0.163208 * hydrogenFlow 
+                - 419.061970 * h2C3 
+                - 0.000019 * bedWeight;
+            
+            // Display result with animation
+            const resultElement = document.getElementById('result');
+            resultElement.style.transform = 'scale(0.8)';
+            resultElement.style.opacity = '0.7';
+            
+            setTimeout(() => {
+                resultElement.textContent = productionRate.toFixed(6);
+                resultElement.style.transform = 'scale(1)';
+                resultElement.style.opacity = '1';
+            }, 150);
+        }
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial display
+            document.getElementById('result').textContent = '---';
+        });
+    </script>
+</body>
+</html>
