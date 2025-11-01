@@ -294,7 +294,7 @@
                 
                 <div class="equation-display">
                     <h3>Equation:</h3>
-                    <code>Production_rate = -0.598327 - 0.000185 × C3_Flow - 0.041806 × Cat_Flow + 8.566896 × SCA_Flow + 4.716540 × Teal/SCA - 0.163208 × Hydrogen_Flow - 419.061970 × H2/C3 - 0.000019 × Bed_Weight</code>
+                    <code>Production_rate = 28.184159 + 0.000075 × C3_Flow + 0.393396 × Cat_Flow - 0.620547 × SCA_Flow + 0.899516 × Teal/SCA + 0.097024 × Hydrogen_Flow - 558.710196 × H2/C3 + 0.000023 × Bed_Weight</code>
                 </div>
             </div>
             
@@ -322,14 +322,14 @@
             const bedWeight = parseFloat(document.getElementById('bedWeight').value) || 0;
             
             // Calculate production rate using the given equation
-            const productionRate = -0.598327 
-                - 0.000185 * c3Flow 
-                - 0.041806 * catFlow 
-                + 8.566896 * scaFlow 
-                + 4.716540 * tealSca 
-                - 0.163208 * hydrogenFlow 
-                - 419.061970 * h2C3 
-                - 0.000019 * bedWeight;
+            const productionRate = 28.184159 
+                + 0.000075 * c3Flow 
+                + 0.393396 * catFlow 
+                - 0.620547 * scaFlow 
+                + 0.899516 * tealSca 
+                + 0.097024 * hydrogenFlow 
+                - 558.710196 * h2C3 
+                + 0.000023 * bedWeight;
             
             // Display result with animation
             const resultElement = document.getElementById('result');
@@ -351,3 +351,4 @@
     </script>
 </body>
 </html>
+
